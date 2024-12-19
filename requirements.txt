@@ -7,3 +7,5 @@ opencc-python-reimplemented
 tiktoken
 langchain-openai
 langchain-community
+langchain>=0.0.200
+chromadb>=0.4.0
