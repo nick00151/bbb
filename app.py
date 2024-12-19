@@ -6,6 +6,7 @@ from langchain.chains.question_answering import load_qa_chain
 from langchain.callbacks import get_openai_callback
 from openc import OpenCC
 import openai
+from langchain_community.vectorstores import Chroma
 from dotenv import load_dotenv
 
 load_dotenv()
