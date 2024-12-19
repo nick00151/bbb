@@ -4,41 +4,40 @@ const submitBtn = document.getElementById("submit_btn");
 const outputDiv = document.getElementById("output");
 const loadingDiv = document.getElementById("loading");
 
-// 設置按鈕的事件監聽器
-submitBtn.addEventListener("click", async function() {
-    const question = userInput.value.trim(); // 取得用戶輸入
-    outputDiv.style.display = "none"; // 隱藏舊的結果
-    loadingDiv.style.display = "block"; // 顯示處理中提示
+submitBtn.addEventListener("click", async function () {
+    const question = userInput.value.trim();
+    outputDiv.style.display = "none";
+    loadingDiv.style.display = "block";
+    submitBtn.disabled = true; // 禁用按鈕，避免重複請求
 
     if (!question) {
-        loadingDiv.textContent = "Please enter a question."; // 用戶未輸入內容
+        loadingDiv.textContent = "Please enter a question.";
+        submitBtn.disabled = false;
         return;
     }
 
     try {
-        // 向後端發送請求
-        const response = await fetch('/api/get_response', {
-            method: 'POST',
+        const response = await fetch("/api/get_response", {
+            method: "POST",
             headers: {
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json",
             },
-            body: JSON.stringify({ user_input: question })
+            body: JSON.stringify({ user_input: question }),
         });
 
         if (!response.ok) {
-            throw new Error("Failed to get a response from the server.");
+            const error = await response.json();
+            throw new Error(error.error || "Server error");
         }
 
-        const data = await response.json(); // 解析後端返回的 JSON
-        if (data.error) {
-            outputDiv.textContent = `Error: ${data.error}`;
-        } else {
-            outputDiv.textContent = `Response: ${data.response}`;
-        }
+        const data = await response.json();
+        outputDiv.textContent = `Response: ${data.response}`;
     } catch (error) {
         outputDiv.textContent = `Error: ${error.message}`;
     } finally {
-        loadingDiv.style.display = "none"; // 隱藏處理中提示
-        outputDiv.style.display = "block"; // 顯示結果
+        loadingDiv.style.display = "none";
+        outputDiv.style.display = "block";
+        submitBtn.disabled = false; // 恢復按鈕狀態
     }
 });
+
