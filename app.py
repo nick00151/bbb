@@ -4,6 +4,7 @@ from langchain_openai import OpenAIEmbeddings
 from langchain.chains.vectorstores import Chroma
 from langchain.chains.question_answering import load_qa_chain
 from langchain.callbacks import get_openai_callback
+from langchain.vectorstores import Chroma
 from openc import OpenCC
 import openai
 from dotenv import load_dotenv
