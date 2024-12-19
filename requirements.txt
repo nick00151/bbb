@@ -1,8 +1,8 @@
 Flask
 gunicorn
-langchain
+langchain>=0.0.200
 openai
-chromadb
+chromadb>=0.4.0
 opencc-python-reimplemented
 tiktoken
 langchain-openai
