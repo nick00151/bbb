@@ -11,42 +11,37 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', template_folder='templates')
 
-# 設定 OpenAI API 金鑰
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
-@app.route('/get_response', methods=['POST'])
+@app.route('/api/get_response', methods=['POST'])
 def get_response():
-    user_input = request.form.get('user_input')
-    if not user_input:
-        return jsonify({'error': 'No user input provided'})
-
-    # 初始化資料庫和嵌入
-    embeddings = OpenAIEmbeddings()
-    if not os.path.exists("./db/temp/"):
-        os.makedirs("./db/temp/")
-    db = Chroma(persist_directory="./db/temp/", embedding_function=embeddings)
-
-    # 搜索相似文件
-    docs = db.similarity_search(user_input)
-
-    # 初始化語言模型和 QA 鏈
-    llm = ChatOpenAI(model_name="gpt-4", temperature=0.5)
-    chain = load_qa_chain(llm, chain_type="stuff")
-
     try:
+        data = request.get_json()  # 接收 JSON
+        user_input = data.get('user_input')
+        if not user_input:
+            return jsonify({'error': 'No user input provided'})
+
+        embeddings = OpenAIEmbeddings()
+        if not os.path.exists("./db/temp/"):
+            os.makedirs("./db/temp/")
+        db = Chroma(persist_directory="./db/temp/", embedding_function=embeddings)
+
+        docs = db.similarity_search(user_input)
+
+        llm = ChatOpenAI(model_name="gpt-4", temperature=0.5)
+        chain = load_qa_chain(llm, chain_type="stuff")
+
         with get_openai_callback() as cb:
             response = chain({"input_documents": docs, "question": user_input})
         if "output_text" not in response:
             return jsonify({'error': 'No output text in response'})
 
-        # 簡繁轉換
         cc = OpenCC('s2t')
         answer = cc.convert(response['output_text'])
 
         return jsonify({'response': answer})
-
     except Exception as e:
         return jsonify({'error': str(e)})
 
