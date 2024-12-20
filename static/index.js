@@ -7,7 +7,7 @@ submitBtn.addEventListener("click", async function () {
     const question = userInput.value.trim();
     outputDiv.style.display = "none";
     loadingDiv.style.display = "block";
-    submitBtn.disabled = true;
+    submitBtn.disabled = true; // 禁用按鈕，避免重複請求
 
     if (!question) {
         loadingDiv.textContent = "請輸入問題，才能獲取回答。";
@@ -30,23 +30,18 @@ submitBtn.addEventListener("click", async function () {
         }
 
         const data = await response.json();
-        if (data.error) {
-            outputDiv.innerHTML = `<p>錯誤：${data.error}</p>`;
-        } else if (data.response) {
-            outputDiv.innerHTML = data.response; // 使用 innerHTML 渲染 HTML 分段
-        } else {
-            outputDiv.innerHTML = "<p>伺服器未返回有效回答，請稍後再試。</p>";
-        }
+        // 將回答內容分段排版
+        outputDiv.innerHTML = `回應：<br>${data.response.replace(/\n/g, "<br>")}`;
     } catch (error) {
         if (error.message.includes("伺服器錯誤")) {
-            outputDiv.innerHTML = "伺服器發生錯誤，請稍後再試。";
+            outputDiv.textContent = "伺服器發生錯誤，請稍後再試。";
         } else {
-            outputDiv.innerHTML = `<p>錯誤：${error.message}</p>`;
+            outputDiv.textContent = `錯誤：${error.message}`;
         }
     } finally {
         loadingDiv.style.display = "none";
         outputDiv.style.display = "block";
-        submitBtn.disabled = false;
+        submitBtn.disabled = false; // 恢復按鈕狀態
     }
 });
 
