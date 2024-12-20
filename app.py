@@ -33,7 +33,7 @@ def get_response():
         db = Chroma(persist_directory="./db/temp/", embedding_function=embeddings)
 
         # 搜索相關文件
-        docs = db.similarity_search(user_input, k=3)
+        docs = db.similarity_search(user_input, k=3)  # 限制最多返回3個相關文件
         if not docs:
             return jsonify({'response': '很抱歉，無法找到相關資料，請換個問題試試！'})
 
@@ -41,25 +41,28 @@ def get_response():
         llm = ChatOpenAI(model_name="gpt-4", temperature=0)
         chain = load_qa_chain(llm, chain_type="stuff")
 
+        # 生成回答
         with get_openai_callback() as cb:
             response = chain({"input_documents": docs, "question": user_input})
 
+        # 檢查回答是否有效
         if not response or "output_text" not in response or not response["output_text"].strip():
             return jsonify({'response': '很抱歉，目前無法生成有效回答，請稍後再試。'})
 
-        cc = OpenCC('s2t')
-        answer = cc.convert(response['output_text'])
+        # 將回答轉換為繁體中文
+        try:
+            cc = OpenCC('s2t')
+            answer = cc.convert(response['output_text'])
+        except Exception:
+            answer = response['output_text']  # 若繁體轉換失敗，使用原始回答
 
-        # 分段處理（例如：每個句子換行）
-        answer_paragraphs = answer.split(". ")
-        formatted_answer = "<p>" + "</p><p>".join(answer_paragraphs) + "</p>"  # 用 `<p>` 分隔段落
-
-        return jsonify({'response': formatted_answer})
+        return jsonify({'response': answer})
 
     except Exception as e:
         return jsonify({'response': f'發生錯誤：{str(e)}'})
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
