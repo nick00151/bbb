@@ -15,10 +15,14 @@ app = Flask(__name__, static_folder='static', template_folder='templates')
 
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
+@app.route('/')
+def index():
+    return render_template('index.html')  # 渲染首頁
+
 @app.route('/api/get_response', methods=['POST'])
 def get_response():
     try:
-        data = request.get_json()  # 接收 JSON
+        data = request.get_json()
         user_input = data.get('user_input')
         if not user_input:
             return jsonify({'error': 'No user input provided'})
@@ -47,3 +51,4 @@ def get_response():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
