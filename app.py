@@ -1,24 +1,3 @@
-from flask import Flask, render_template, request, jsonify
-import os
-from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.chains.question_answering import load_qa_chain
-from langchain.callbacks import get_openai_callback
-from opencc import OpenCC
-import openai
-from langchain.chat_models import ChatOpenAI
-from langchain.vectorstores import Chroma
-from dotenv import load_dotenv
-
-load_dotenv()
-
-app = Flask(__name__, static_folder='static', template_folder='templates')
-
-openai.api_key = os.getenv('OPENAI_API_KEY')
-
-@app.route('/')
-def index():
-    return render_template('index.html')  # 渲染首頁
-
 @app.route('/api/get_response', methods=['POST'])
 def get_response():
     try:
@@ -49,10 +28,12 @@ def get_response():
         if not response or "output_text" not in response or not response["output_text"].strip():
             return jsonify({'response': '很抱歉，目前無法生成有效回答，請稍後再試。'})
 
-        # 將回答轉換為繁體中文
+        # 將回答轉換為繁體中文並分段
         try:
             cc = OpenCC('s2t')
             answer = cc.convert(response['output_text'])
+            # 插入換行符號（這裡模擬段落分隔的處理，可以根據需要調整）
+            answer = '\n\n'.join(answer.split('. '))  # 每句後插入換行
         except Exception:
             answer = response['output_text']  # 若繁體轉換失敗，使用原始回答
 
@@ -60,6 +41,3 @@ def get_response():
 
     except Exception as e:
         return jsonify({'response': f'發生錯誤：{str(e)}'})
-
-if __name__ == "__main__":
-    app.run(debug=True)
