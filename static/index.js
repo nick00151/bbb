@@ -21,14 +21,16 @@ submitBtn.addEventListener("click", async function () {
 
         const data = await response.json();
         if (data.error) {
-            outputDiv.textContent = `錯誤：${data.error}`;
+            outputDiv.innerHTML = `<p style="color: red;">錯誤：${data.error}</p>`;
         } else if (data.response) {
-            outputDiv.textContent = `回應：${data.response}`;
+            // 將換行符替換為 <br>
+            const formattedResponse = data.response.replace(/\n/g, "<br>");
+            outputDiv.innerHTML = `<div>回應：<br>${formattedResponse}</div>`;
         } else {
-            outputDiv.textContent = "伺服器未返回有效回答，請稍後再試。";
+            outputDiv.innerHTML = "<p style='color: red;'>伺服器未返回有效回答，請稍後再試。</p>";
         }
     } catch (error) {
-        outputDiv.textContent = `錯誤：${error.message}`;
+        outputDiv.innerHTML = `<p style="color: red;">錯誤：${error.message}</p>`;
     } finally {
         loadingDiv.style.display = "none";
         outputDiv.style.display = "block";
