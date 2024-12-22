@@ -16,7 +16,7 @@ submitBtn.addEventListener("click", async function () {
     }
 
     try {
-        const response = await fetch("/api/get_response", {
+        const response = await fetch("http://127.0.0.1:5000/api/get_response", { // 使用完整 URL
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -39,3 +39,4 @@ submitBtn.addEventListener("click", async function () {
         submitBtn.disabled = false; // 恢復按鈕狀態
     }
 });
+
