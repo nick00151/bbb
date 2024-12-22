@@ -16,7 +16,8 @@ submitBtn.addEventListener("click", async function () {
     }
 
     try {
-        const response = await fetch("http://127.0.0.1:5000/api/get_response", { // 使用完整 URL
+        console.log("發送請求中..."); // 調試訊息
+        const response = await fetch("http://127.0.0.1:5000/api/get_response", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -30,6 +31,7 @@ submitBtn.addEventListener("click", async function () {
         }
 
         const data = await response.json();
+        console.log("收到回應：", data); // 調試訊息
         outputDiv.innerHTML = `回應：<br>${data.response.replace(/\n/g, "<br>")}`;
     } catch (error) {
         outputDiv.textContent = `錯誤：${error.message}`;
