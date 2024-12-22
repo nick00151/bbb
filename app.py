@@ -1,3 +1,14 @@
+from flask import Flask, request, jsonify
+import os
+from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.vectorstores import Chroma
+from langchain.chains import load_qa_chain
+from langchain.chat_models import ChatOpenAI
+from langchain.callbacks import get_openai_callback
+from opencc import OpenCC
+
+app = Flask(__name__)
+
 @app.route('/api/get_response', methods=['POST'])
 def get_response():
     try:
@@ -45,4 +56,9 @@ def get_response():
 
     except Exception as e:
         return jsonify({'response': f'伺服器錯誤：{str(e)}'}), 500  # 返回 500 錯誤
+
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
+
 
