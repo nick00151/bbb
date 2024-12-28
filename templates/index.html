@@ -1,27 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"> <!-- 設定文件的字符編碼 -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- 設定響應式設計 -->
-    <title>QA System</title> <!-- 網頁標題 -->
-    <link rel="stylesheet" type="text/css" href="/static/all.css"> <!-- 引入樣式表 -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QA System</title>
+    <link rel="stylesheet" type="text/css" href="/static/all.css"> <!-- 連接外部樣式表 -->
 </head>
 <body>
-    <div class="container"> <!-- 網頁主容器 -->
-        <h1>QA System</h1> <!-- 網頁標題 -->
-        <textarea id="user_input" placeholder="輸入你的問題..."></textarea> <!-- 使用者輸入框 -->
-        <button id="submit_btn">獲取回答</button> <!-- 提交按鈕 -->
-        <div id="output" class="output"></div> <!-- 回應區域 -->
-        <div id="loading" class="loading" style="display: none;">正在處理請求...</div> <!-- 加載提示 -->
+    <div class="container">
+        <h1>QA System</h1> <!-- 頁面標題 -->
+        <textarea id="user_input" placeholder="輸入你的問題..."></textarea> <!-- 用戶輸入框 -->
+        <button id="submit_btn">獲取回答</button> <!-- 按鈕：提交問題 -->
+        <div id="output" class="output"></div> <!-- 顯示 AI 回答的區域 -->
+        <div id="loading" class="loading" style="display: none;">正在處理請求...</div> <!-- 請求處理中的提示 -->
     </div>
     <center>
-        <h4>用法說明:問他問題然後按獲取回答，AI 就會回答你，會基本的問候跟回答有關資管系的問題，但如果不是 data (1).txt 的內容可能會無法回答。</h4>
+        <h4>用法說明:問他問題然後按獲取回答ai就會回答你，會基本的問候跟回答有關資管系的問題，但是如果不是data (1).txt的內容 可能會寫沒辦法回答或是亂回答</h4>
         <p>
             您可以下載 data (1).txt 來做查看：
-            <a href="https://drive.google.com/uc?export=download&id=1iLgrkMW55b1YahEy5IboZqky40aqAs8y" download="data (1).txt">下載 data (1).txt</a>
+            <a href="https://drive.google.com/uc?export=download&id=1iLgrkMW55b1YahEy5IboZqky40aqAs8y" 
+               download="data (1).txt">下載 data (1).txt</a>
         </p>
     </center>
-    <script src="/static/app.js"></script> <!-- 引入 JavaScript 文件 -->
+    <script>
+        // 選取 HTML 元素
+        const userInput = document.getElementById("user_input"); // 用戶輸入的文本框
+        const submitBtn = document.getElementById("submit_btn"); // 提交按鈕
+        const outputDiv = document.getElementById("output"); // 顯示 AI 回答的區域
+        const loadingDiv = document.getElementById("loading"); // 顯示加載中提示
+
+        // 添加點擊事件監聽器
+        submitBtn.addEventListener("click", async function () {
+            const question = userInput.value.trim(); // 獲取用戶輸入，並去掉多餘的空格
+            outputDiv.style.display = "none"; // 隱藏輸出區域，避免舊回應影響
+            loadingDiv.style.display = "block"; // 顯示加載提示
+            submitBtn.disabled = true; // 禁用按鈕，防止重複請求
+
+            if (!question) {
+                // 如果用戶未輸入問題，提示並恢復按鈕狀態
+                loadingDiv.textContent = "請輸入問題，才能獲取回答。";
+                submitBtn.disabled = false;
+                return;
+            }
+
+            try {
+                // 發送 POST 請求至後端 API
+                const response = await fetch("/api/get_response", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json", // 設置請求類型為 JSON
+                    },
+                    body: JSON.stringify({ user_input: question }), // 傳遞用戶的問題
+                });
+
+                if (!response.ok) {
+                    // 如果伺服器返回錯誤，拋出異常
+                    const error = await response.json();
+                    throw new Error(error.error || "伺服器錯誤");
+                }
+
+                // 解析伺服器返回的 JSON 數據
+                const data = await response.json();
+                outputDiv.textContent = `回應：${data.response}`; // 顯示 AI 回答
+            } catch (error) {
+                // 捕捉異常並顯示錯誤信息
+                if (error.message.includes("伺服器錯誤")) {
+                    outputDiv.textContent = "伺服器發生錯誤，請稍後再試。";
+                } else {
+                    outputDiv.textContent = `錯誤：${error.message}`;
+                }
+            } finally {
+                // 無論請求是否成功，恢復按鈕狀態並隱藏加載提示
+                loadingDiv.style.display = "none";
+                outputDiv.style.display = "block";
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
 </body>
 </html>
+
 
