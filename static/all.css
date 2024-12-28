@@ -1,56 +1,57 @@
 .container {
-    max-width: 1024px;
-    margin: 0 auto;
-    text-align: center;
-    padding: 20px;
-    background-color: #f7f8fa;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 1024px; /* 設定容器的最大寬度為 1024 像素 */
+    margin: 0 auto; /* 將容器置中 */
+    text-align: center; /* 文字置中 */
+    padding: 20px; /* 增加容器內的填充 */
+    background-color: #f7f8fa; /* 設定容器的背景色 */
+    border-radius: 8px; /* 圓角 */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 添加陰影效果 */
 }
 
 h1 {
-    font-size: 24px;
-    color: #333;
-    margin-bottom: 20px;
+    font-size: 24px; /* 設定標題字體大小 */
+    color: #333; /* 設定字體顏色 */
+    margin-bottom: 20px; /* 與下方元素的距離 */
 }
 
 textarea {
-    width: 100%;
-    height: 100px;
-    margin-bottom: 20px;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+    width: 100%; /* 設定輸入框寬度為 100% */
+    height: 100px; /* 輸入框高度 */
+    margin-bottom: 20px; /* 與下方按鈕的距離 */
+    padding: 10px; /* 輸入框內的填充距離 */
+    font-size: 16px; /* 字體大小 */
+    border: 1px solid #ddd; /* 邊框樣式 */
+    border-radius: 5px; /* 圓角邊框 */
 }
 
 button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
+    background-color: #007bff; /* 按鈕背景色 */
+    color: white; /* 按鈕文字顏色 */
+    border: none; /* 去除按鈕邊框 */
+    padding: 10px 20px; /* 按鈕內邊距 */
+    border-radius: 5px; /* 圓角按鈕 */
+    font-size: 16px; /* 按鈕文字大小 */
+    cursor: pointer; /* 鼠標指針樣式 */
 }
 
 button:hover {
-    background-color: #0056b3;
+    background-color: #0056b3; /* 滑鼠懸停時按鈕的背景色 */
 }
 
 .output {
-    margin-top: 20px;
-    padding: 10px;
-    background: #f1f1f1;
-    border-radius: 5px;
-    font-size: 16px;
-    text-align: left;
-    white-space: pre-wrap;
-    color: teal;
+    margin-top: 20px; /* 與上方元素的距離 */
+    padding: 10px; /* 內容內距 */
+    background: #f1f1f1; /* 背景色 */
+    border-radius: 5px; /* 圓角背景 */
+    font-size: 16px; /* 文字大小 */
+    text-align: left; /* 文字靠左對齊 */
+    white-space: pre-wrap; /* 保留換行符號 */
+    color: teal; /* 文字顏色 */
 }
 
 .loading {
-    font-size: 14px;
-    color: #999;
-    margin-top: 10px;
+    font-size: 14px; /* 文字大小 */
+    color: #999; /* 文字顏色 */
+    margin-top: 10px; /* 與上方距離 */
 }
+
